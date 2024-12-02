@@ -1,0 +1,92 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    >
+
+    <!-- Biểu tượng âm nhạc -->
+    <ImageView
+        android:id="@+id/musicIcon"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/music" />
+
+    <!-- Tiêu đề bài hát -->
+    <TextView
+        android:id="@+id/songTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Song Title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp" />
+
+    <!-- Nút điều khiển -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <!-- Nút Previous -->
+        <ImageButton
+            android:id="@+id/btnPrevious"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/previus"
+            android:background="@null" />
+
+        <!-- Nút Play/Pause -->
+        <ImageButton
+            android:id="@+id/btnPlayPause"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/play"
+            android:background="@null"
+            android:layout_marginHorizontal="20dp" />
+
+        <!-- Nút Next -->
+        <ImageButton
+            android:id="@+id/btnNext"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/next"
+            android:background="@null" />
+    </LinearLayout>
+
+    <!-- SeekBar -->
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Thời gian -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+
+        >
+
+        <!-- Thời gian đã phát -->
+        <TextView
+            android:id="@+id/tvCurrentTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00" />
+
+        <!-- Tổng thời gian -->
+        <TextView
+            android:id="@+id/tvTotalTime"
+            android:layout_width="345dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="03:45" />
+    </LinearLayout>
+</LinearLayout>
