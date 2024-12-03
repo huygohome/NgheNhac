@@ -7,6 +7,16 @@
     android:gravity="center">
 
     <!-- Ảnh minh họa -->
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:gravity="center"
+        android:text="BACK"
+        />
+
     <ImageView
         android:id="@+id/imgCover"
         android:layout_width="200dp"

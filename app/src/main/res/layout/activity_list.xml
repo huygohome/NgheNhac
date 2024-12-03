@@ -1,9 +1,54 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
+    <!-- Tên App -->
+    <TextView
+        android:id="@+id/appName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ứng Dụng Nghe Nhạc"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Thanh tìm kiếm -->
+    <EditText
+        android:id="@+id/searchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tìm kiếm bài hát"
+        android:padding="16dp"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Button: Các bài hát yêu thích -->
+    <Button
+        android:id="@+id/favoriteSongsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bài hát yêu thích"
+        android:layout_marginBottom="10dp"/>
+
+    <!-- Button: Các bài hát nghe gần đây -->
+    <Button
+        android:id="@+id/recentSongsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bài hát gần đây"
+        android:layout_marginBottom="10dp"/>
+
+    <!-- Danh sách bài hát -->
+    <TextView
+        android:id="@+id/songListLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Danh sách bài hát của tôi"
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

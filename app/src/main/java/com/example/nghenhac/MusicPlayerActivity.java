@@ -2,6 +2,8 @@ package com.example.nghenhac;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -17,7 +19,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
     private TextView tvSongName, tvArtistName, tvCurrentTime, tvTotalTime;
     private ImageButton btnPlayPause, btnPrevious, btnNext;
     private SeekBar seekBar;
-
+    private Button back;
     private MediaPlayer mediaPlayer;
     private Song currentSong;
 
@@ -38,19 +40,25 @@ public class MusicPlayerActivity extends AppCompatActivity {
         btnPrevious = findViewById(R.id.btnPrevious);
         btnNext = findViewById(R.id.btnNext);
         seekBar = findViewById(R.id.seekBar);
-
+        back = findViewById(R.id.back);
         // Nhận dữ liệu từ MainActivity
         currentSong = (Song) getIntent().getSerializableExtra("song");
         if (currentSong != null) {
             setupSongInfo();
         }
-
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         // Tạo MediaPlayer
         mediaPlayer = new MediaPlayer();
 
         try {
             mediaPlayer.setDataSource(currentSong.getFilePath());
             mediaPlayer.prepare();
+            playMusic();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -16,16 +16,23 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     private List<Song> songs;
     private Context context;
     private OnSongClickListener listener;
+    private OnSongLongClickListener longClickListener; // Giữ lâu
+
 
     // Giao diện để lắng nghe sự kiện click
     public interface OnSongClickListener {
         void onSongClick(Song song);
     }
+    // Giao diện để lắng nghe sự kiện giữ lâu
+    public interface OnSongLongClickListener {
+        void onSongLongClick(Song song);
+    }
 
-    public SongAdapter(Context context, List<Song> songs, OnSongClickListener listener) {
+    public SongAdapter(Context context, List<Song> songs, OnSongClickListener listener, OnSongLongClickListener longClickListener) {
         this.context = context;
         this.songs = songs;
         this.listener = listener;
+        this.longClickListener = longClickListener;
     }
 
     @NonNull
@@ -48,6 +55,13 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
             if (listener != null) {
                 listener.onSongClick(song);
             }
+        });
+        // Xử lý sự kiện giữ lâu
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onSongLongClick(song);
+            }
+            return true;
         });
     }
 

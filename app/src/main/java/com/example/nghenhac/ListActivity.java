@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,17 +21,24 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ListActivity extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION = 123;
-
+    Button favoriteSongsButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-
+        favoriteSongsButton = findViewById(R.id.favoriteSongsButton);
         if (checkPermission()) {
             loadMusicFromDevice();
         } else {
             requestPermission();
         }
+        favoriteSongsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(ListActivity.this, FavoriteSongActivity.class);
+                startActivity(intent1);
+            }
+        });
     }
 
     private boolean checkPermission() {
@@ -53,12 +63,17 @@ public class ListActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        SongAdapter adapter = new SongAdapter(this, ListNhac.getSongs(), song -> {
-            // Xử lý khi chọn bài hát
-            Intent intent = new Intent(ListActivity.this, MusicPlayerActivity.class);
-            intent.putExtra("song", song);
-            startActivity(intent);
-        });
+        SongAdapter adapter = new SongAdapter(this, ListNhac.getSongs(),
+                song -> {
+                    // Xử lý khi click bài nhạc
+                    Intent intent = new Intent(ListActivity.this, MusicPlayerActivity.class);
+                    intent.putExtra("song", song);
+                    startActivity(intent);
+                },
+                song -> {
+                    // Xử lý khi giữ lâu bài nhạc
+                    FavoriteSongs.addFavorite(song,this); // Thêm bài hát vào danh sách yêu thích
+                });
 
         recyclerView.setAdapter(adapter);
     }
