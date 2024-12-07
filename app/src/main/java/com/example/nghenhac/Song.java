@@ -8,13 +8,21 @@ public class Song implements Serializable {
     private String artist;  // Nghệ sĩ
     private String duration; // Thời lượng bài hát
     private String filePath; // Đường dẫn đến file nhạc
-
+    private long lastPlayed; // Thời gian phát cuối cùng
     public Song(int imageResId, String name, String artist, String duration, String filePath) {
         this.imageResId = imageResId;
         this.name = name;
         this.artist = artist;
         this.duration = duration;
         this.filePath = filePath;
+
+    }
+    public long getLastPlayed() {
+        return lastPlayed;
+    }
+
+    public void setLastPlayed(long lastPlayed) {
+        this.lastPlayed = lastPlayed;
     }
 
     // Getter methods

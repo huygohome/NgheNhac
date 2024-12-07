@@ -2,33 +2,30 @@ package com.example.nghenhac;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class FavoriteSongActivity extends AppCompatActivity {
     SongAdapter adapter;
     Button back;
+    ListView listViewFavorites;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite_song);
-        back = findViewById(R.id.back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        // Hiển thị danh sách yêu thích
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewFavorites);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        back = findViewById(R.id.back);
+        listViewFavorites = findViewById(R.id.listViewFavorites);
+
+        back.setOnClickListener(view -> finish());
+
+        // Hiển thị danh sách yêu thích
         adapter = new SongAdapter(this, FavoriteSongs.getFavoriteSongs(),
-                song -> {
+                (song,position) -> {
                     // Xử lý khi click bài nhạc
                     Intent intent = new Intent(FavoriteSongActivity.this, MusicPlayerActivity.class);
                     intent.putExtra("song", song);
@@ -38,8 +35,9 @@ public class FavoriteSongActivity extends AppCompatActivity {
                     removeFromFavorites(song);
                 });
 
-        recyclerView.setAdapter(adapter);
+        listViewFavorites.setAdapter(adapter);
     }
+
     private void removeFromFavorites(Song song) {
         // Xóa bài hát khỏi danh sách yêu thích
         FavoriteSongs.removeFavorite(song);
@@ -50,5 +48,9 @@ public class FavoriteSongActivity extends AppCompatActivity {
         // Cập nhật lại danh sách
         adapter.notifyDataSetChanged();
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged(); // Cập nhật lại adapter
+    }
 }
-

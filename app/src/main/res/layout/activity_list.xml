@@ -49,8 +49,8 @@
         android:text="Danh sách bài hát của tôi"
         android:textSize="18sp"
         android:layout_marginBottom="10dp"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <ListView
+        android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

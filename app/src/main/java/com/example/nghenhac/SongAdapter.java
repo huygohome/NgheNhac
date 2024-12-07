@@ -4,25 +4,23 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
 
-public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder> {
+public class SongAdapter extends BaseAdapter {
     private List<Song> songs;
     private Context context;
     private OnSongClickListener listener;
     private OnSongLongClickListener longClickListener; // Giữ lâu
 
-
     // Giao diện để lắng nghe sự kiện click
     public interface OnSongClickListener {
-        void onSongClick(Song song);
+        void onSongClick(Song song, int position);
     }
+
     // Giao diện để lắng nghe sự kiện giữ lâu
     public interface OnSongLongClickListener {
         void onSongLongClick(Song song);
@@ -35,15 +33,36 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         this.longClickListener = longClickListener;
     }
 
-    @NonNull
     @Override
-    public SongViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_song, parent, false);
-        return new SongViewHolder(view);
+    public int getCount() {
+        return songs.size();
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SongViewHolder holder, int position) {
+    public Object getItem(int position) {
+        return songs.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_song, parent, false);
+            holder = new ViewHolder();
+            holder.imgSong = convertView.findViewById(R.id.imgSong);
+            holder.tvName = convertView.findViewById(R.id.tvName);
+            holder.tvArtist = convertView.findViewById(R.id.tvArtist);
+            holder.tvDuration = convertView.findViewById(R.id.tvDuration);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
         Song song = songs.get(position);
 
         holder.imgSong.setImageResource(song.getImageResId());
@@ -51,36 +70,26 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         holder.tvArtist.setText(song.getArtist());
         holder.tvDuration.setText(song.getDuration());
 
-        holder.itemView.setOnClickListener(v -> {
+        // Xử lý sự kiện click
+        convertView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onSongClick(song);
+                listener.onSongClick(song, position);
             }
         });
+
         // Xử lý sự kiện giữ lâu
-        holder.itemView.setOnLongClickListener(v -> {
+        convertView.setOnLongClickListener(v -> {
             if (longClickListener != null) {
                 longClickListener.onSongLongClick(song);
             }
             return true;
         });
+
+        return convertView;
     }
 
-    @Override
-    public int getItemCount() {
-        return songs.size();
-    }
-
-    public static class SongViewHolder extends RecyclerView.ViewHolder {
+    private static class ViewHolder {
         ImageView imgSong;
         TextView tvName, tvArtist, tvDuration;
-
-        public SongViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            imgSong = itemView.findViewById(R.id.imgSong);
-            tvName = itemView.findViewById(R.id.tvName);
-            tvArtist = itemView.findViewById(R.id.tvArtist);
-            tvDuration = itemView.findViewById(R.id.tvDuration);
-        }
     }
 }
