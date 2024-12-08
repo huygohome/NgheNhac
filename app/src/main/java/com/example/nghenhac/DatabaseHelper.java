@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "users.db";
@@ -21,6 +24,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, USERNAME TEXT, PASSWORD TEXT)");
+
+
     }
 
     @Override
@@ -44,9 +49,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor.getCount() > 0; // Trả về true nếu tên đăng nhập đã tồn tại
     }
 
-    public boolean checkUser (String username, String password) {
+    public boolean checkUser(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE USERNAME = ? AND PASSWORD = ?", new String[]{username, password});
         return cursor.getCount() > 0; // Trả về true nếu tìm thấy người dùng
     }
+
+
 }

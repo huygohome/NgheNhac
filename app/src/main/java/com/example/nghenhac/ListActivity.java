@@ -34,7 +34,8 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-
+        // Tải danh sách yêu thích
+        FavoriteSongs.loadFavorites(this);
         searchBar = findViewById(R.id.searchBar);
         favoriteSongsButton = findViewById(R.id.favoriteSongsButton);
         listView = findViewById(R.id.listView);
@@ -102,15 +103,18 @@ public class ListActivity extends AppCompatActivity {
         adapter = new SongAdapter(this, filteredSongs,
                 (song,position) -> {
                     // Xử lý khi click bài nhạc
-                    addSongToHistory(song.getName()); // Thêm vào lịch sử
-                    Intent intent = new Intent(ListActivity.this, MusicPlayerActivity.class);
-                    intent.putExtra("currentSongIndex", position);
-                    startActivity(intent);
+                    // Tìm index thực trong danh sách allSongs
+                    int realIndex = allSongs.indexOf(song);
+                    if (realIndex != -1) {
+                        addSongToHistory(song.getName()); // Thêm vào lịch sử
+                        Intent intent = new Intent(ListActivity.this, MusicPlayerActivity.class);
+                        intent.putExtra("currentSongIndex", realIndex); // Truyền index thực
+                        startActivity(intent);
+                    }
                 },
                 song -> {
                     // Xử lý khi giữ lâu bài nhạc
                     FavoriteSongs.addFavorite(song, this); // Thêm bài hát vào danh sách yêu thích
-                    Toast.makeText(this, "Đã thêm vào mục yêu thích: " + song.getName(), Toast.LENGTH_SHORT).show();
                 });
 
         listView.setAdapter(adapter);
@@ -140,5 +144,12 @@ public class ListActivity extends AppCompatActivity {
         // Lưu bài hát và thời gian vào SharedPreferences
         editor.putLong(songName, currentTime);
         editor.apply();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Lưu danh sách yêu thích
+        FavoriteSongs.saveFavorites(this);
     }
 }

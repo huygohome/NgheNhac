@@ -31,6 +31,21 @@ public class Song implements Serializable {
     public String getArtist() { return artist; }
     public String getDuration() { return duration; }
     public String getFilePath() { return filePath; }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true; // Nếu là cùng tham chiếu
+        if (obj == null || getClass() != obj.getClass()) return false; // Kiểm tra null và loại đối tượng
+
+        Song song = (Song) obj;
+        // So sánh dựa trên filePath (hoặc các thuộc tính quan trọng khác nếu cần)
+        return filePath != null && filePath.equals(song.filePath);
+    }
+
+    @Override
+    public int hashCode() {
+        // Sử dụng filePath để tính toán hashCode
+        return filePath != null ? filePath.hashCode() : 0;
+    }
 
     // Setter methods (nếu cần thiết)
     public void setImageResId(int imageResId) { this.imageResId = imageResId; }

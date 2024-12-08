@@ -29,7 +29,17 @@ public class ListNhac {
                 MediaStore.Audio.Media.DATA
         };
 
-        Cursor cursor = contentResolver.query(musicUri, projection, null, null, null);
+        // Lọc chỉ lấy các file có phần mở rộng là .mp3, .mp4, hoặc .m4a
+        String selection = MediaStore.Audio.Media.DATA + " LIKE ? OR " +
+                MediaStore.Audio.Media.DATA + " LIKE ? OR " +
+                MediaStore.Audio.Media.DATA + " LIKE ?";
+        String[] selectionArgs = new String[]{
+                "%.mp3",
+                "%.mp4",
+                "%.m4a"
+        };
+
+        Cursor cursor = contentResolver.query(musicUri, projection, selection, selectionArgs, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             do {

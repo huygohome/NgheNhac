@@ -4,9 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -77,9 +79,15 @@ public class MusicPlayerActivity extends AppCompatActivity {
         // Nhận currentSongIndex từ Intent
         currentSongIndex = getIntent().getIntExtra("currentSongIndex", 0);
         // Load trạng thái yêu thích
-        isFavorite = loadFavoriteState(currentSongIndex);
-        updateFavoriteButton(isFavorite);
-
+        Intent intent = getIntent();
+        boolean isFavoriteMode = intent.getBooleanExtra("isFavoriteMode", false);
+        if (isFavoriteMode) {
+            songList = (List<Song>) intent.getSerializableExtra("favoriteSongs"); // Lấy danh sách yêu thích
+            currentSongIndex = intent.getIntExtra("currentSongIndex", 0); // Vị trí trong danh sách yêu thích
+        } else {
+            songList = ListNhac.getSongs(); // Danh sách chính
+            currentSongIndex = getIntent().getIntExtra("currentSongIndex", 0);
+        }
         // Gọi playSong() để phát nhạc
         playSong();
 
@@ -134,7 +142,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
         btnFavorite.setOnClickListener(v -> {
             isFavorite = !isFavorite;
-            updateFavoriteButton(isFavorite);
             saveFavoriteState(currentSongIndex, isFavorite);
         });
     }
@@ -167,14 +174,14 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
         mediaPlayer = new MediaPlayer();
         try {
-            mediaPlayer.setDataSource(currentSong.getFilePath()); // Sử dụng đường dẫn bài hát từ songList
+            mediaPlayer.setDataSource(this, Uri.parse(currentSong.getFilePath())); // Thay filePath bằng Uri
             mediaPlayer.prepare();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        tvSongTitle.setText(currentSong.getName() + " - " + currentSong.getArtist());
-        isFavorite = loadFavoriteState(currentSongIndex);
+
+        tvSongTitle.setText(currentSong.getName() + "\n" + currentSong.getArtist());
         updateFavoriteButton(isFavorite);
 
         mediaPlayer.setOnPreparedListener(mp -> {
@@ -212,7 +219,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
     }
 
     private void updateFavoriteButton(boolean isFavorite) {
-        btnFavorite.setImageResource(isFavorite ? R.drawable.heart_filled512x512 : R.drawable.heart_outline512x512);
+        btnFavorite.setImageResource(R.drawable.heart_filled512x512);
     }
 
     private void saveFavoriteState(int songIndex, boolean isFavorite) {
@@ -220,18 +227,12 @@ public class MusicPlayerActivity extends AppCompatActivity {
         if (isFavorite) {
             FavoriteSongs.addFavorite(currentSong, this); // Thêm vào danh sách yêu thích
         } else {
-            FavoriteSongs.removeFavorite(currentSong); // Xóa khỏi danh sách yêu thích
+            FavoriteSongs.removeFavorite(currentSong, this); // Xóa khỏi danh sách yêu thích
             Toast.makeText(this, "Đã xóa khỏi mục yêu thích!", Toast.LENGTH_SHORT).show();
         }
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("favorite_" + songIndex, isFavorite);
-        editor.apply();
     }
 
 
-    private boolean loadFavoriteState(int songIndex) {
-        return sharedPreferences.getBoolean("favorite_" + songIndex, false);
-    }
 
     private void updateSeekBar() {
         seekBar.setProgress(mediaPlayer.getCurrentPosition());
