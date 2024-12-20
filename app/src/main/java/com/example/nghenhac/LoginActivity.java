@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
                     // Chuyển đến ListActivity khi đăng nhập thành công
-                    Intent intent = new Intent(LoginActivity.this, ListActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, ChuyenManActivity.class);
                     startActivity(intent);
                     finish(); // Kết thúc LoginActivity để không quay lại được
                 } else {

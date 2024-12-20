@@ -31,6 +31,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Bài hát yêu thích"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorPrimary"
         android:layout_marginBottom="10dp"/>
 
 
@@ -39,6 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Bài hát gần đây"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorPrimary"
         android:layout_marginBottom="10dp"/>
 
 
