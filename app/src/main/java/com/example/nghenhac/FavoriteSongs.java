@@ -16,23 +16,9 @@ public class FavoriteSongs {
         return favoriteSongs;
     }
 
-    // Lưu danh sách yêu thích vào SharedPreferences
-    public static void saveFavorites(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Song song : favoriteSongs) {
-            // Chuyển từng bài hát thành chuỗi phân tách
-            stringBuilder.append(song.getImageResId()).append("|")
-                    .append(song.getName()).append("|")
-                    .append(song.getArtist()).append("|")
-                    .append(song.getDuration()).append("|")
-                    .append(song.getFilePath()).append(";");
-        }
-
-        editor.putString(KEY_FAVORITES, stringBuilder.toString());
-        editor.apply();
+    // Gọi loadFavorites() trong một phương thức khởi tạo, hoặc khi ứng dụng khởi động
+    public static void initialize(Context context) {
+        loadFavorites(context); // Đảm bảo danh sách được tải khi ứng dụng bắt đầu
     }
 
     // Tải danh sách yêu thích từ SharedPreferences
@@ -42,9 +28,9 @@ public class FavoriteSongs {
 
         favoriteSongs.clear(); // Xóa dữ liệu cũ
         if (!savedFavorites.isEmpty()) {
-            String[] songsData = savedFavorites.split(";"); // Mỗi bài hát ngăn cách bởi ";"
+            String[] songsData = savedFavorites.split(";");
             for (String songData : songsData) {
-                String[] attributes = songData.split("\\|"); // Thuộc tính ngăn cách bởi "|"
+                String[] attributes = songData.split("\\|");
                 if (attributes.length == 5) {
                     int imageResId = Integer.parseInt(attributes[0]);
                     String name = attributes[1];
@@ -73,5 +59,23 @@ public class FavoriteSongs {
         favoriteSongs.remove(song);
         saveFavorites(context); // Lưu lại danh sách sau khi xóa
         Toast.makeText(context, "Đã xóa khỏi mục yêu thích!", Toast.LENGTH_SHORT).show();
+    }
+
+    // Lưu danh sách yêu thích vào SharedPreferences
+    public static void saveFavorites(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Song song : favoriteSongs) {
+            stringBuilder.append(song.getImageResId()).append("|")
+                    .append(song.getName()).append("|")
+                    .append(song.getArtist()).append("|")
+                    .append(song.getDuration()).append("|")
+                    .append(song.getFilePath()).append(";");
+        }
+
+        editor.putString(KEY_FAVORITES, stringBuilder.toString());
+        editor.apply();
     }
 }

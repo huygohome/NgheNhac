@@ -21,25 +21,27 @@ public class FavoriteSongActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite_song);
+
+        // Khởi tạo và tải danh sách yêu thích từ SharedPreferences
+        FavoriteSongs.initialize(this); // Gọi phương thức initialize để tải danh sách yêu thích
+
         // Tải danh sách yêu thích
         back = findViewById(R.id.back);
-        listViewFavorites = findViewById(R.id.listViewFavorites);
         back.setOnClickListener(view -> finish());
+        listViewFavorites = findViewById(R.id.listViewFavorites);
 
-        // Hiển thị danh sách yêu thích
         adapter = new SongAdapter(this, FavoriteSongs.getFavoriteSongs(),
                 (song, position) -> {
-                    List<Song> favoriteSongs = FavoriteSongs.getFavoriteSongs(); // Lấy danh sách yêu thích hiện tại
+                    List<Song> favoriteSongs = FavoriteSongs.getFavoriteSongs();
                     Intent intent = new Intent(FavoriteSongActivity.this, MusicPlayerActivity.class);
-                    intent.putExtra("currentSongIndex", position); // Vị trí trong danh sách yêu thích
-                    intent.putExtra("favoriteSongs", (Serializable) favoriteSongs); // Truyền danh sách yêu thích
-                    intent.putExtra("isFavoriteMode", true); // Đánh dấu đang ở chế độ yêu thích
+                    intent.putExtra("currentSongIndex", position);
+                    intent.putExtra("favoriteSongs", (Serializable) favoriteSongs);
+                    intent.putExtra("isFavoriteMode", true);
                     startActivity(intent);
                 },
                 song -> {
                     removeFromFavorites(song);
                 });
-
 
         listViewFavorites.setAdapter(adapter);
     }

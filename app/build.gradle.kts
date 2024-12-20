@@ -32,7 +32,9 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.exoplayer)
+    implementation(libs.retrofit)
+    implementation(libs.convertergson)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

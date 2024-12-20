@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ChuyenManActivity">
+    <TextView
+        android:id="@+id/appName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ứng Dụng Nghe Nhạc"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"/>
+    <TextView
+        android:id="@+id/txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Xin mời chọn: "
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="left"
+        android:layout_marginBottom="20dp"/>
+    <Button
+        android:id="@+id/NgheNhacOffline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nghe nhạc từ thiết bị ➥"
+        android:textSize="19sp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorPrimary"
+        android:padding="16dp"
+        android:layout_marginTop="16dp" />
+    <Button
+        android:id="@+id/KhamPhaOnline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Khám phá thêm những bài hát (Cần mạng)➥"
+        android:textSize="19sp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorPrimary"
+        android:padding="16dp"
+        android:layout_marginTop="16dp" />
+</LinearLayout>

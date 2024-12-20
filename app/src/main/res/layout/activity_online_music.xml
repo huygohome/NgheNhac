@@ -17,36 +17,11 @@
         android:layout_marginBottom="20dp"/>
 
 
-    <EditText
-        android:id="@+id/searchBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tìm kiếm bài hát"
-        android:padding="16dp"
-        android:layout_marginBottom="20dp"/>
-
-
-    <Button
-        android:id="@+id/favoriteSongsButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Bài hát yêu thích"
-        android:layout_marginBottom="10dp"/>
-
-
-    <Button
-        android:id="@+id/recentSongsButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Bài hát gần đây"
-        android:layout_marginBottom="10dp"/>
-
-
     <TextView
         android:id="@+id/songListLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Danh sách bài hát của tôi"
+        android:text="Khám phá thêm nhạc với Last.fm !"
         android:textSize="18sp"
         android:layout_marginBottom="10dp"/>
     <ListView
