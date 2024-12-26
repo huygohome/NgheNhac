@@ -78,4 +78,9 @@ public class FavoriteSongs {
         editor.putString(KEY_FAVORITES, stringBuilder.toString());
         editor.apply();
     }
+
+    public static boolean isFavorite(Song song, Context context) {
+        loadFavorites(context); // Đảm bảo dữ liệu được cập nhật từ bộ nhớ
+        return favoriteSongs.contains(song);
+    }
 }

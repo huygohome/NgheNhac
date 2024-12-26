@@ -27,6 +27,7 @@ import java.util.List;
 public class MusicPlayerActivity extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION = 123;
+
     private ImageButton btnMode, btnPlayPause, btnNext, btnPrev, btnFavorite;
     private SeekBar seekBar;
     private TextView tvCurrentTime, tvDuration, tvSongTitle;
@@ -56,19 +57,10 @@ public class MusicPlayerActivity extends AppCompatActivity {
         tvSongTitle = findViewById(R.id.tvSongTitle);
         btnFavorite = findViewById(R.id.btnFavorite);
 
-        // Gọi hàm quét nhạc
-        while (true) {
-            if (checkPermission()) {
-                ListNhac.loadMusicFromDevice(this);
-                break;
-            } else {
-                requestPermission();
-            }
+        // Kiểm tra cấp quyền
+        if (!checkPermission()){
+            requestPermission();
         }
-
-
-        // Tạo danh sách bài hát
-        songList = ListNhac.getSongs();
 
         // Khởi tạo SharedPreferences
         sharedPreferences = getSharedPreferences("MusicAppPrefs", MODE_PRIVATE);
@@ -76,9 +68,11 @@ public class MusicPlayerActivity extends AppCompatActivity {
         // Lấy chế độ lặp từ SharedPreferences
         loopMode = sharedPreferences.getInt("loopMode", 0); // Mặc định là 0 (Lặp danh sách)
         updateLoopButton();
+
         // Nhận currentSongIndex từ Intent
         currentSongIndex = getIntent().getIntExtra("currentSongIndex", 0);
-        // Load trạng thái yêu thích
+
+        // load xem từ activity danh sách chính hay activity yêu thích vào activity này
         Intent intent = getIntent();
         boolean isFavoriteMode = intent.getBooleanExtra("isFavoriteMode", false);
         if (isFavoriteMode) {
@@ -88,6 +82,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
             songList = ListNhac.getSongs(); // Danh sách chính
             currentSongIndex = getIntent().getIntExtra("currentSongIndex", 0);
         }
+
         // Gọi playSong() để phát nhạc
         playSong();
 
@@ -132,6 +127,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
+        // Mode button
         btnMode.setOnClickListener(v -> {
             loopMode = (loopMode + 1) % 3; // Chuyển chế độ
             updateLoopButton();
@@ -140,9 +136,27 @@ public class MusicPlayerActivity extends AppCompatActivity {
             editor.apply();
         });
 
+        // Favorite button
         btnFavorite.setOnClickListener(v -> {
             isFavorite = !isFavorite;
+            updateFavoriteButton(isFavorite);
             saveFavoriteState(currentSongIndex, isFavorite);
+        });
+
+        // Xử lý sự kiện khi chạy hết nhạc
+        mediaPlayer.setOnCompletionListener(mp -> {
+            if (loopMode == 0) { // Lặp danh sách
+                currentSongIndex = (currentSongIndex + 1) % songList.size();
+                playSong();
+            } else if (loopMode == 1) { // Lặp bài hiện tại
+                playSong();
+            } else if (loopMode == 2) { // Phát ngẫu nhiên
+                int previousIndex = currentSongIndex;
+                do {
+                    currentSongIndex = (int) (Math.random() * songList.size());
+                } while (currentSongIndex == previousIndex);
+                playSong();
+            }
         });
     }
 
@@ -166,46 +180,41 @@ public class MusicPlayerActivity extends AppCompatActivity {
             return;
         }
 
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
+        if (mediaPlayer == null) {
+            mediaPlayer = new MediaPlayer();
+        } else {
+            mediaPlayer.reset();
         }
 
         Song currentSong = songList.get(currentSongIndex);
 
-        mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setDataSource(this, Uri.parse(currentSong.getFilePath())); // Thay filePath bằng Uri
             mediaPlayer.prepare();
+            mediaPlayer.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        // cập nhật thông tin bài hát
+        updateUIForSong(currentSong);
+    }
 
-        tvSongTitle.setText(currentSong.getName() + "\n" + currentSong.getArtist());
-        updateFavoriteButton(isFavorite);
+    private void updateUIForSong(Song song) {
+        tvSongTitle.setText(song.getName() + "\n" + song.getArtist());
+        tvDuration.setText(formatTime(mediaPlayer.getDuration()));
+        seekBar.setMax(mediaPlayer.getDuration());
+        btnPlayPause.setImageResource(R.drawable.pause);
+        updateFavoriteButton(FavoriteSongs.isFavorite(song, this));
+        updateSeekBar();
+    }
 
-        mediaPlayer.setOnPreparedListener(mp -> {
-            tvDuration.setText(formatTime(mediaPlayer.getDuration()));
-            seekBar.setMax(mediaPlayer.getDuration());
-            mediaPlayer.start();
-            btnPlayPause.setImageResource(R.drawable.pause);
-            updateSeekBar();
-        });
-
-        mediaPlayer.setOnCompletionListener(mp -> {
-            if (loopMode == 0) { // Lặp danh sách
-                currentSongIndex = (currentSongIndex + 1) % songList.size();
-                playSong();
-            } else if (loopMode == 1) { // Lặp bài hiện tại
-                playSong();
-            } else if (loopMode == 2) { // Phát ngẫu nhiên
-                int previousIndex = currentSongIndex;
-                do {
-                    currentSongIndex = (int) (Math.random() * songList.size());
-                } while (currentSongIndex == previousIndex);
-                playSong();
-            }
-        });
+    private void updateFavoriteButton(boolean isFavorite) {
+        if (isFavorite) {
+            btnFavorite.setImageResource(R.drawable.heart_filled512x512);
+        } else {
+            btnFavorite.setImageResource(R.drawable.heart_outline512x512);
+        }
     }
 
     private void updateLoopButton() {
@@ -218,21 +227,14 @@ public class MusicPlayerActivity extends AppCompatActivity {
         }
     }
 
-    private void updateFavoriteButton(boolean isFavorite) {
-        btnFavorite.setImageResource(R.drawable.heart_filled512x512);
-    }
-
     private void saveFavoriteState(int songIndex, boolean isFavorite) {
         Song currentSong = songList.get(songIndex);
         if (isFavorite) {
             FavoriteSongs.addFavorite(currentSong, this); // Thêm vào danh sách yêu thích
         } else {
             FavoriteSongs.removeFavorite(currentSong, this); // Xóa khỏi danh sách yêu thích
-            Toast.makeText(this, "Đã xóa khỏi mục yêu thích!", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
     private void updateSeekBar() {
         seekBar.setProgress(mediaPlayer.getCurrentPosition());
@@ -253,6 +255,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
         if (mediaPlayer != null) {
             mediaPlayer.release();
         }
+        handler.removeCallbacksAndMessages(null);
     }
-
 }
